@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/screen/home/restaurant_card_widget.dart';
+import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
+import 'package:restaurant_app/static/navigation_route.dart';
+import 'package:restaurant_app/static/restaurant_list_result_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,6 +13,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      context.read<RestaurantListProvider>().fetchRestaurantList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +40,36 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      body: Consumer<RestaurantListProvider>(
+       builder: (context, value, child) {
+         return switch (value.resultState) {
+           RestaurantListLoadingState() => const Center(
+               child: CircularProgressIndicator(),
+             ),
+           RestaurantListLoadedState(data: var RestaurantList) => ListView.builder(
+               itemCount: RestaurantList.length,
+               itemBuilder: (context, index) {
+                 final Restaurant = RestaurantList[index];
+ 
+                 return RestaurantCard(
+                   restaurant: Restaurant,
+                   onTap: () {
+                     Navigator.pushNamed(
+                       context,
+                       NavigationRoute.detailRoute.name,
+                       arguments: Restaurant.id,
+                     );
+                   },
+                 );
+               },
+             ),
+           RestaurantListErrorState(error: var message) => Center(
+               child: Text(message),
+             ),
+           _ => const SizedBox(),
+         };
+       },
+     ),
     );
   }
 }

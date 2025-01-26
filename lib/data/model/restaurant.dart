@@ -22,7 +22,9 @@ class Restaurant {
       description: json["description"], 
       pictureId: json["pictureId"], 
       city: json["city"], 
-      rating: json["rating"]
+      rating: (json["rating"] is int)
+          ? (json["rating"] as int).toDouble()
+          : json["rating"], 
     );
   }
   
