@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
 import 'package:restaurant_app/screen/detail/menu_card_widget.dart';
+import 'package:restaurant_app/screen/detail/review_card_widget.dart';
 
 class BodyOfDetailScreenWidget extends StatelessWidget {
   const BodyOfDetailScreenWidget({
@@ -19,7 +20,7 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              "${ApiService.mediumImageUrl}/${restaurant.pictureId}",
+              "${ApiService.smallImageUrl}/${restaurant.pictureId}",
               fit: BoxFit.cover,
             ),
             const SizedBox.square(dimension: 16),
@@ -112,10 +113,32 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                 itemCount: restaurant.menus.foods.length,
                 itemBuilder: (context, index) {
                   final name = restaurant.menus.drinks[index].name;
-                  return MenuCardWidget(name: name, type: "drinks",);
+                  return MenuCardWidget(
+                    name: name,
+                    type: "drinks",
+                  );
                 },
               ),
             ),
+            const SizedBox.square(dimension: 16),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Reviews",
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const SizedBox.square(dimension: 10),
+            Column(
+              children: restaurant.customerReviews.map((customerReview){
+              return ReviewCardWidget(
+                name: customerReview.name, 
+                review: customerReview.review,
+                date: customerReview.date,
+              );
+            },).toList(),
+          )
           ],
         ),
       ),
