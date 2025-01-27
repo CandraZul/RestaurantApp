@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
+import 'package:restaurant_app/screen/detail/menu_card_widget.dart';
 
 class BodyOfDetailScreenWidget extends StatelessWidget {
   const BodyOfDetailScreenWidget({
@@ -18,7 +19,7 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              "${ApiService.largeImageUrl}/${restaurant.pictureId}",
+              "${ApiService.mediumImageUrl}/${restaurant.pictureId}",
               fit: BoxFit.cover,
             ),
             const SizedBox.square(dimension: 16),
@@ -47,8 +48,8 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                 Row(
                   children: [
                     const Icon(
-                      Icons.favorite,
-                      color: Colors.pink,
+                      Icons.star,
+                      color: Colors.amber,
                     ),
                     const SizedBox.square(dimension: 4),
                     Text(
@@ -64,9 +65,62 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
               restaurant.description,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
+            const SizedBox.square(dimension: 16),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Menu",
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const SizedBox.square(dimension: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Foods",
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const SizedBox.square(dimension: 8),
+            SizedBox(
+              height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: restaurant.menus.foods.length,
+                itemBuilder: (context, index) {
+                  final name = restaurant.menus.foods[index].name;
+                  return MenuCardWidget(name: name, type: "foods");
+                },
+              ),
+            ),
+            const SizedBox.square(dimension: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Drinks",
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.left,
+              ),
+            ),
+            const SizedBox.square(dimension: 8),
+            SizedBox(
+              height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: restaurant.menus.foods.length,
+                itemBuilder: (context, index) {
+                  final name = restaurant.menus.drinks[index].name;
+                  return MenuCardWidget(name: name, type: "drinks",);
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+

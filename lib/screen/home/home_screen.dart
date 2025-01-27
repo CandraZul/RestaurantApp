@@ -46,18 +46,18 @@ class _HomeScreenState extends State<HomeScreen> {
            RestaurantListLoadingState() => const Center(
                child: CircularProgressIndicator(),
              ),
-           RestaurantListLoadedState(data: var RestaurantList) => ListView.builder(
-               itemCount: RestaurantList.length,
+           RestaurantListLoadedState(data: var restaurantList) => ListView.builder(
+               itemCount: restaurantList.length,
                itemBuilder: (context, index) {
-                 final Restaurant = RestaurantList[index];
+                 final restaurant = restaurantList[index];
  
                  return RestaurantCard(
-                   restaurant: Restaurant,
+                   restaurant: restaurant,
                    onTap: () {
                      Navigator.pushNamed(
                        context,
                        NavigationRoute.detailRoute.name,
-                       arguments: Restaurant.id,
+                       arguments: restaurant.id,
                      );
                    },
                  );
