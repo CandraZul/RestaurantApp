@@ -4,13 +4,83 @@ import 'package:restaurant_app/data/model/restaurant.dart';
 import 'package:restaurant_app/screen/detail/menu_card_widget.dart';
 import 'package:restaurant_app/screen/detail/review_card_widget.dart';
 
-class BodyOfDetailScreenWidget extends StatelessWidget {
+class BodyOfDetailScreenWidget extends StatefulWidget {
   const BodyOfDetailScreenWidget({
     super.key,
     required this.restaurant,
   });
 
   final Restaurant restaurant;
+
+  @override
+  State<BodyOfDetailScreenWidget> createState() => _BodyOfDetailScreenWidgetState();
+}
+
+class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _reviewController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _reviewController.dispose();
+    super.dispose();
+  }
+
+   void _showReviewDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Review'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _reviewController,
+                  decoration: const InputDecoration(
+                    labelText: 'Review',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); 
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final name = _nameController.text;
+                final review = _reviewController.text;
+
+                if (name.isNotEmpty && review.isNotEmpty) {
+                  print('Name: $name, Review: $review');
+                }
+
+                Navigator.pop(context); 
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +90,7 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              "${ApiService.smallImageUrl}/${restaurant.pictureId}",
+              "${ApiService.smallImageUrl}/${widget.restaurant.pictureId}",
               fit: BoxFit.cover,
             ),
             const SizedBox.square(dimension: 16),
@@ -33,11 +103,11 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        restaurant.name,
+                        widget.restaurant.name,
                         style: Theme.of(context).textTheme.headlineLarge,
                       ),
                       Text(
-                        restaurant.city,
+                        widget.restaurant.city,
                         style: Theme.of(context)
                             .textTheme
                             .labelLarge
@@ -54,7 +124,7 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
                     ),
                     const SizedBox.square(dimension: 4),
                     Text(
-                      restaurant.rating.toString(),
+                      widget.restaurant.rating.toString(),
                       style: Theme.of(context).textTheme.bodyLarge,
                     )
                   ],
@@ -63,7 +133,7 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
             ),
             const SizedBox.square(dimension: 16),
             Text(
-              restaurant.description,
+              widget.restaurant.description,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox.square(dimension: 16),
@@ -89,9 +159,9 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
               height: 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: restaurant.menus.foods.length,
+                itemCount: widget.restaurant.menus.foods.length,
                 itemBuilder: (context, index) {
-                  final name = restaurant.menus.foods[index].name;
+                  final name = widget.restaurant.menus.foods[index].name;
                   return MenuCardWidget(name: name, type: "foods");
                 },
               ),
@@ -110,9 +180,9 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
               height: 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: restaurant.menus.foods.length,
+                itemCount: widget.restaurant.menus.foods.length,
                 itemBuilder: (context, index) {
-                  final name = restaurant.menus.drinks[index].name;
+                  final name = widget.restaurant.menus.drinks[index].name;
                   return MenuCardWidget(
                     name: name,
                     type: "drinks",
@@ -121,17 +191,22 @@ class BodyOfDetailScreenWidget extends StatelessWidget {
               ),
             ),
             const SizedBox.square(dimension: 16),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
                 "Reviews",
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.left,
               ),
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: _showReviewDialog,)
+              ]
             ),
             const SizedBox.square(dimension: 10),
             Column(
-              children: restaurant.customerReviews.map((customerReview){
+              children: widget.restaurant.customerReviews.map((customerReview){
               return ReviewCardWidget(
                 name: customerReview.name, 
                 review: customerReview.review,
