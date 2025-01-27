@@ -13,6 +13,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -22,12 +24,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _onSearch(String query) {
+    if (query.isNotEmpty) {
+      context.read<RestaurantListProvider>().searchRestaurant(query);
+    } else {
+      context.read<RestaurantListProvider>().fetchRestaurantList();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, 
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Restaurant",
@@ -40,36 +50,60 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: Consumer<RestaurantListProvider>(
-       builder: (context, value, child) {
-         return switch (value.resultState) {
-           RestaurantListLoadingState() => const Center(
-               child: CircularProgressIndicator(),
-             ),
-           RestaurantListLoadedState(data: var restaurantList) => ListView.builder(
-               itemCount: restaurantList.length,
-               itemBuilder: (context, index) {
-                 final restaurant = restaurantList[index];
- 
-                 return RestaurantCard(
-                   restaurant: restaurant,
-                   onTap: () {
-                     Navigator.pushNamed(
-                       context,
-                       NavigationRoute.detailRoute.name,
-                       arguments: restaurant.id,
-                     );
-                   },
-                 );
-               },
-             ),
-           RestaurantListErrorState(error: var message) => Center(
-               child: Text(message),
-             ),
-           _ => const SizedBox(),
-         };
-       },
-     ),
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: TextField(
+              controller: searchController,
+              onChanged: _onSearch,
+              decoration: const InputDecoration(
+                hintText: 'Search here...',
+                prefixIcon: Icon(Icons.search),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Consumer<RestaurantListProvider>(
+              builder: (context, value, child) {
+                return switch (value.resultState) {
+                  RestaurantListLoadingState() => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  RestaurantListLoadedState(data: var restaurantList) =>
+                    ListView.builder(
+                      itemCount: restaurantList.length,
+                      itemBuilder: (context, index) {
+                        final restaurant = restaurantList[index];
+
+                        return RestaurantCard(
+                          restaurant: restaurant,
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              NavigationRoute.detailRoute.name,
+                              arguments: restaurant.id,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  RestaurantListErrorState(error: var message) => Center(
+                      child: Text(message),
+                    ),
+                  _ => const SizedBox(),
+                };
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
