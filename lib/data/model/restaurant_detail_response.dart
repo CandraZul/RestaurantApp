@@ -20,13 +20,17 @@ class RestaurantDetailResponse {
     return RestaurantDetailResponse(
         error: json["error"],
         message: json["message"],
-        restaurant: json["restaurant"],
+        restaurant: Restaurant.fromJson(json["restaurant"]),
         categories: json["categories"] != null
-            ? List<Category>.from(json["categories"]!.map((x) => Category.fromJson(x)))
+            ? List<Category>.from(
+                json["categories"]!.map((x) => Category.fromJson(x)))
             : <Category>[],
-        menus: Menus.fromJson(json["menus"]) ,
+        menus: json["menus"] != null
+            ? Menus.fromJson(json["menus"])
+            : Menus(foods: [], drinks: []),
         customerReviews: json["customerReviews"] != null
-            ? List<CustomerReview>.from(json["customerReviews"]!.map((x) => CustomerReview.fromJson(x)))
+            ? List<CustomerReview>.from(
+                json["customerReviews"]!.map((x) => CustomerReview.fromJson(x)))
             : <CustomerReview>[]);
   }
 }

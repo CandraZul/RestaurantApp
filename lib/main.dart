@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
+import 'package:restaurant_app/provider/detail/tourism_detail_provider.dart';
 import 'package:restaurant_app/screen/detail/detail_screen.dart';
 import 'package:restaurant_app/screen/home/home_screen.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
@@ -19,6 +20,11 @@ void main() {
             context.read<ApiService>(),
           ),
         ),
+               ChangeNotifierProvider(
+         create: (context) => RestaurantDetailProvider(
+           context.read<ApiService>(),
+         ),
+       ),
       ],
       child: const MyApp(),
     ),
@@ -41,8 +47,8 @@ class MyApp extends StatelessWidget {
       routes: {
         NavigationRoute.mainRoute.name: (context) => const HomeScreen(),
         NavigationRoute.detailRoute.name: (context) => DetailScreen(
-            // tourismId: ModalRoute.of(context)?.settings.arguments as int,
-            ),
+            restaurantId: ModalRoute.of(context)?.settings.arguments as String,
+          ),
       },
     );
   }
