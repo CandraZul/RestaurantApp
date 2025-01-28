@@ -25,6 +25,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         _resultState = RestaurantDetailLoadedState(result.restaurant);
+        
         notifyListeners();
       }
     } on Exception catch (e) {

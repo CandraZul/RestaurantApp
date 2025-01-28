@@ -3,6 +3,7 @@ import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
 import 'package:restaurant_app/screen/detail/menu_card_widget.dart';
 import 'package:restaurant_app/screen/detail/review_card_widget.dart';
+import 'package:restaurant_app/screen/detail/review_dialog.dart';
 
 class BodyOfDetailScreenWidget extends StatefulWidget {
   const BodyOfDetailScreenWidget({
@@ -13,70 +14,17 @@ class BodyOfDetailScreenWidget extends StatefulWidget {
   final Restaurant restaurant;
 
   @override
-  State<BodyOfDetailScreenWidget> createState() => _BodyOfDetailScreenWidgetState();
+  State<BodyOfDetailScreenWidget> createState() =>
+      _BodyOfDetailScreenWidgetState();
 }
 
 class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _reviewController = TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _reviewController.dispose();
-    super.dispose();
-  }
-
-   void _showReviewDialog() {
+  void _showReviewDialog(String id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Review'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _reviewController,
-                  decoration: const InputDecoration(
-                    labelText: 'Review',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); 
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final name = _nameController.text;
-                final review = _reviewController.text;
-
-                if (name.isNotEmpty && review.isNotEmpty) {
-                  print('Name: $name, Review: $review');
-                }
-
-                Navigator.pop(context); 
-              },
-              child: const Text('Submit'),
-            ),
-          ],
+        return AddReviewDialog(
+          restaurantId: id,
         );
       },
     );
@@ -191,34 +139,32 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
               ),
             ),
             const SizedBox.square(dimension: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text(
                 "Reviews",
                 style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.left,
               ),
               IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: _showReviewDialog,)
-              ]
-            ),
+                onPressed:  () => _showReviewDialog(widget.restaurant.id),
+              )
+            ]),
             const SizedBox.square(dimension: 10),
             Column(
-              children: widget.restaurant.customerReviews.map((customerReview){
-              return ReviewCardWidget(
-                name: customerReview.name, 
-                review: customerReview.review,
-                date: customerReview.date,
-              );
-            },).toList(),
-          )
+              children: widget.restaurant.customerReviews.map(
+                (customerReview) {
+                  return ReviewCardWidget(
+                    name: customerReview.name,
+                    review: customerReview.review,
+                    date: customerReview.date,
+                  );
+                },
+              ).toList(),
+            )
           ],
         ),
       ),
     );
   }
 }
-
-
