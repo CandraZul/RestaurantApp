@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/provider/home/theme_provider.dart';
 import 'package:restaurant_app/screen/home/restaurant_card_widget.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
@@ -36,19 +37,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Restaurant",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Recommendation restaurant for you!",
-              style: TextStyle(fontSize: 14, color: Colors.white70),
-            ),
-          ],
+        title: Text(
+          "Restaurant",
         ),
+        actions: [
+            Consumer<ThemeProvider>(
+              builder: (context, value, child){
+                return IconButton(
+                  onPressed: (){
+                    value.toggleTheme();
+                  }, 
+                  icon: Icon(value.isDarkMode
+                      ? Icons.dark_mode
+                      : Icons.light_mode)
+                  );
+              })
+        ],
       ),
       body: Column(
         children: [

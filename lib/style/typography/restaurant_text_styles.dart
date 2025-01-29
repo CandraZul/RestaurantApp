@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
  
 class RestaurantTextStyles {
- static const TextStyle _commonStyle = TextStyle(
-   fontFamily: 'IBMPlexSansCondensed',
- );
+ static TextStyle _commonStyle = GoogleFonts.poppins();
  
  /// displayLarge Text Style
  static TextStyle displayLarge = _commonStyle.copyWith(

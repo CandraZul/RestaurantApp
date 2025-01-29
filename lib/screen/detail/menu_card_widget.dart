@@ -17,7 +17,7 @@ class MenuCardWidget extends StatelessWidget {
       child: Container(
         width: 100,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 49, 49, 49),
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -27,15 +27,19 @@ class MenuCardWidget extends StatelessWidget {
              type == "foods"
              ? Icons.restaurant
              : Icons.local_drink, 
-              size: 40
+              size: 40,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                '$name',
-                style: Theme.of(context).textTheme.labelMedium,
+                name,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
                 textAlign: TextAlign.center,
+                
               ),
             ),
           ],

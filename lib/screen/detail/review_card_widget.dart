@@ -34,17 +34,13 @@ class ReviewCardWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      "$name",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(
-                      " ($date)",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                  ],
+                Text(
+                  "$name",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  "($date)",
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
                 const SizedBox(height: 5), 
                 Text(

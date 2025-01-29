@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/provider/detail/customer_review_provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
+import 'package:restaurant_app/provider/home/theme_provider.dart';
 import 'package:restaurant_app/screen/detail/detail_screen.dart';
 import 'package:restaurant_app/screen/home/home_screen.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
@@ -31,6 +32,7 @@ void main() {
             context.read<ApiService>(),
           ),
         ),
+        ChangeNotifierProvider(create: (context) => ThemeProvider())
       ],
       child: const MyApp(),
     ),
@@ -39,23 +41,26 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
+  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Restaurant App',
-      initialRoute: NavigationRoute.mainRoute.name,
-      theme: RestaurantTheme.lightTheme,
-      darkTheme: RestaurantTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      routes: {
-        NavigationRoute.mainRoute.name: (context) => const HomeScreen(),
-        NavigationRoute.detailRoute.name: (context) => DetailScreen(
-              restaurantId:
-                  ModalRoute.of(context)?.settings.arguments as String,
-            ),
+    return Consumer<ThemeProvider>(
+      builder: (context, value, child) {
+        return MaterialApp(
+          title: 'Restaurant App',
+          initialRoute: NavigationRoute.mainRoute.name,
+          theme: RestaurantTheme.lightTheme,
+          darkTheme: RestaurantTheme.darkTheme,
+          themeMode: value.themeMode,
+          debugShowCheckedModeBanner: false,
+          routes: {
+            NavigationRoute.mainRoute.name: (context) => const HomeScreen(),
+            NavigationRoute.detailRoute.name: (context) => DetailScreen(
+                  restaurantId:
+                      ModalRoute.of(context)?.settings.arguments as String,
+                ),
+          },
+        );
       },
     );
   }
