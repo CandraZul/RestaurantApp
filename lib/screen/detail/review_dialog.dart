@@ -18,17 +18,17 @@ class AddReviewDialog extends StatelessWidget {
     final reviewController = TextEditingController();
 
     return AlertDialog(
-      title: Text('Add Review'),
+      title: const Text('Add Review'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: nameController,
-            decoration: InputDecoration(labelText: 'Name'),
+            decoration: const InputDecoration(labelText: 'Name'),
           ),
           TextField(
             controller: reviewController,
-            decoration: InputDecoration(labelText: 'Review'),
+            decoration: const InputDecoration(labelText: 'Review'),
             maxLines: 3,
           ),
         ],
@@ -36,7 +36,7 @@ class AddReviewDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () async {
@@ -52,7 +52,7 @@ class AddReviewDialog extends StatelessWidget {
             final state = provider.resultState;
             if (state is CustomerReviewLoadedState) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Review added successfully!')),
+                const SnackBar(content: Text('Review added successfully!')),
               );
             } else if (state is CustomerReviewErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -62,7 +62,7 @@ class AddReviewDialog extends StatelessWidget {
 
             Navigator.pop(context);
           },
-          child: Text('Submit'),
+          child: const Text('Submit'),
         ),
       ],
     );

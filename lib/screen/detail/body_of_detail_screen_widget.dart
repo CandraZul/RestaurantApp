@@ -37,9 +37,12 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Image.network(
-              "${ApiService.smallImageUrl}/${widget.restaurant.pictureId}",
-              fit: BoxFit.cover,
+            Hero(
+              tag: widget.restaurant.pictureId,
+              child: Image.network(
+                "${ApiService.smallImageUrl}/${widget.restaurant.pictureId}",
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox.square(dimension: 16),
             Row(
