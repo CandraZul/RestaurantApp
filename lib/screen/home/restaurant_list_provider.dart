@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/static/restaurant_list_result_state.dart';

@@ -64,6 +64,13 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
                             .labelLarge
                             ?.copyWith(fontWeight: FontWeight.w400),
                       ),
+                      Text(
+                        widget.restaurant.address,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(fontWeight: FontWeight.w400),
+                      ),
                     ],
                   ),
                 ),
@@ -131,7 +138,7 @@ class _BodyOfDetailScreenWidgetState extends State<BodyOfDetailScreenWidget> {
               height: 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: widget.restaurant.menus.foods.length,
+                itemCount: widget.restaurant.menus.drinks.length,
                 itemBuilder: (context, index) {
                   final name = widget.restaurant.menus.drinks[index].name;
                   return MenuCardWidget(
