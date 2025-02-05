@@ -31,9 +31,7 @@ class Restaurant {
         description: json["description"] ?? '',
         pictureId: json["pictureId"],
         city: json["city"],
-        address: json["address"] != null
-            ? json["address"]
-            : "",
+        address: json["address"] ?? "",
         rating: (json["rating"] is int)
             ? (json["rating"] as int).toDouble()
             : json["rating"],

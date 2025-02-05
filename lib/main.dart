@@ -11,11 +11,16 @@ import 'package:restaurant_app/screen/detail/detail_screen.dart';
 import 'package:restaurant_app/screen/favorite/favorite_screen.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
 import 'package:restaurant_app/screen/main/main_screen.dart';
+import 'package:restaurant_app/services/shared_preferences_service.dart';
 import 'package:restaurant_app/services/sqlite_service.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/style/theme/restaurant_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+
   runApp(
     MultiProvider(
       providers: [
@@ -37,7 +42,7 @@ void main() {
             context.read<ApiService>(),
           ),
         ),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider(SharedPreferencesService(prefs))),
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
         ChangeNotifierProvider(create: (context) => FavoriteListProvider(SqliteService())),
         Provider(
