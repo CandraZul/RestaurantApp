@@ -9,11 +9,11 @@ class SqliteService {
   Future<void> createTables(Database database) async {
     await database.execute(
       """CREATE TABLE $_tableName(
-       id TEXT,
-       name TEXT,
+       id TEXT PRIMARY KEY,  
+       name TEXT NOT NULL,
        pictureId TEXT,
        city TEXT,
-       rating INTEGER
+       rating REAL  
      )
      """,
     );
@@ -48,7 +48,7 @@ class SqliteService {
     return results.map((result) => Restaurant.fromJson(result)).toList();
   }
 
-  Future<Restaurant> getItemById(int id) async {
+  Future<Restaurant> getItemById(String id) async {
     final db = await _initializeDb();
     final results =
         await db.query(_tableName, where: "id = ?", whereArgs: [id], limit: 1);
@@ -56,7 +56,7 @@ class SqliteService {
     return results.map((result) => Restaurant.fromJson(result)).first;
   }
 
-  Future<int> updateItem(int id, Restaurant restaurant) async {
+  Future<int> updateItem(String id, Restaurant restaurant) async {
     final db = await _initializeDb();
 
     final data = restaurant.toJson();
@@ -66,7 +66,7 @@ class SqliteService {
     return result;
   }
 
-  Future<int> removeItem(int id) async {
+  Future<int> removeItem(String id) async {
     final db = await _initializeDb();
 
     final result =

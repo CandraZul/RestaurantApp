@@ -28,7 +28,7 @@ class Restaurant {
     return Restaurant(
         id: json["id"],
         name: json["name"],
-        description: json["description"],
+        description: json["description"] ?? '',
         pictureId: json["pictureId"],
         city: json["city"],
         address: json["address"] != null

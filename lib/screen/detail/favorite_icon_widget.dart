@@ -16,7 +16,6 @@ class FavoriteIconWidget extends StatefulWidget {
 }
 
 class _FavoriteIconWidgetState extends State<FavoriteIconWidget> {
-
   @override
   void initState() {
     final favoriteListProvider = context.read<FavoriteListProvider>();
@@ -49,7 +48,8 @@ class _FavoriteIconWidgetState extends State<FavoriteIconWidget> {
       icon: Icon(
         context.watch<FavoriteIconProvider>().isFavorited
             ? Icons.favorite
-            : Icons.favorite_outline,color: Colors.pink,
+            : Icons.favorite_outline,
+        color: Colors.pink,
       ),
     );
   }

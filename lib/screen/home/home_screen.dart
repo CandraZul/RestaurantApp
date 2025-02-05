@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/provider/favorite/favorite_list_povider.dart';
 import 'package:restaurant_app/provider/home/theme_provider.dart';
 import 'package:restaurant_app/screen/home/restaurant_card_widget.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
@@ -22,6 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Future.microtask(() {
       context.read<RestaurantListProvider>().fetchRestaurantList();
+      context.read<FavoriteListProvider>().loadFavoritesFromDatabase();
+
     });
   }
 

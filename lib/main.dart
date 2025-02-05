@@ -9,7 +9,6 @@ import 'package:restaurant_app/provider/home/theme_provider.dart';
 import 'package:restaurant_app/provider/main/index_nav_provider.dart';
 import 'package:restaurant_app/screen/detail/detail_screen.dart';
 import 'package:restaurant_app/screen/favorite/favorite_screen.dart';
-import 'package:restaurant_app/screen/home/home_screen.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
 import 'package:restaurant_app/screen/main/main_screen.dart';
 import 'package:restaurant_app/services/sqlite_service.dart';
@@ -40,7 +39,7 @@ void main() {
         ),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
-        ChangeNotifierProvider(create: (context) => FavoriteListProvider()),
+        ChangeNotifierProvider(create: (context) => FavoriteListProvider(SqliteService())),
         Provider(
           create: (context) => SqliteService(),
         ),

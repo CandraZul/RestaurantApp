@@ -1,24 +1,37 @@
 import 'package:flutter/widgets.dart';
 import 'package:restaurant_app/data/model/restaurant.dart';
+import 'package:restaurant_app/services/sqlite_service.dart';
 
 class FavoriteListProvider extends ChangeNotifier {
   final List<Restaurant> _favoriteList = [];
+  final SqliteService _service;
+
+  FavoriteListProvider(this._service) {
+    loadFavoritesFromDatabase();
+  }
 
   List<Restaurant> get favoriteList => _favoriteList;
 
-  void addFavorite(Restaurant value) {
+  Future<void> loadFavoritesFromDatabase() async {
+    final favorites = await _service.getAllItems();
+    _favoriteList.clear();
+    _favoriteList.addAll(favorites);
+    notifyListeners();
+  }
+
+  Future<void> addFavorite(Restaurant value) async {
+    await _service.insertItem(value);
     _favoriteList.add(value);
     notifyListeners();
   }
 
-  void removeFavorite(Restaurant value) {
+  Future<void> removeFavorite(Restaurant value) async {
+    await _service.removeItem(value.id);
     _favoriteList.removeWhere((element) => element.id == value.id);
     notifyListeners();
   }
 
   bool checkItemFavorite(Restaurant value) {
-    final restaurantInList =
-        _favoriteList.where((element) => element.id == value.id);
-    return restaurantInList.isNotEmpty;
+    return _favoriteList.any((element) => element.id == value.id);
   }
 }

@@ -45,7 +45,7 @@ class LocalDatabaseProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> loadRestaurantValueById(int id) async {
+  Future<void> loadRestaurantValueById(String id) async {
     try {
       _restaurant = await _service.getItemById(id);
       _message = "Your data is loaded";
@@ -56,7 +56,7 @@ class LocalDatabaseProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateRestaurantValueById(int id, Restaurant value) async {
+  Future<void> updateRestaurantValueById(String id, Restaurant value) async {
     try {
       final result = await _service.updateItem(id, value);
 
@@ -74,7 +74,7 @@ class LocalDatabaseProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> removeRestaurantValueById(int id) async {
+  Future<void> removeRestaurantValueById(String id) async {
     try {
       await _service.removeItem(id);
 
