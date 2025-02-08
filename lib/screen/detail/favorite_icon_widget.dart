@@ -36,14 +36,14 @@ class _FavoriteIconWidgetState extends State<FavoriteIconWidget> {
       onPressed: () {
         final favoriteListProvider = context.read<FavoriteListProvider>();
         final favoriteIconProvider = context.read<FavoriteIconProvider>();
-        final isFavoriteed = favoriteIconProvider.isFavorited;
+        final isFavorited = favoriteIconProvider.isFavorited;
 
-        if (!isFavoriteed) {
+        if (!isFavorited) {
           favoriteListProvider.addFavorite(widget.restaurant);
         } else {
           favoriteListProvider.removeFavorite(widget.restaurant);
         }
-        favoriteIconProvider.isFavorited = !isFavoriteed;
+        favoriteIconProvider.isFavorited = !isFavorited;
       },
       icon: Icon(
         context.watch<FavoriteIconProvider>().isFavorited
