@@ -8,11 +8,13 @@ import 'package:restaurant_app/provider/favorite/local_database_provider.dart';
 import 'package:restaurant_app/provider/home/theme_provider.dart';
 import 'package:restaurant_app/provider/main/index_nav_provider.dart';
 import 'package:restaurant_app/provider/notification/local_notification_provider.dart';
+import 'package:restaurant_app/provider/notification/payload_provider.dart';
 import 'package:restaurant_app/provider/setting/notification_button_provider.dart';
 import 'package:restaurant_app/screen/detail/detail_screen.dart';
 import 'package:restaurant_app/screen/favorite/favorite_screen.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
 import 'package:restaurant_app/screen/main/main_screen.dart';
+import 'package:restaurant_app/services/http_service.dart';
 import 'package:restaurant_app/services/local_notification_service.dart';
 import 'package:restaurant_app/services/shared_preferences_service.dart';
 import 'package:restaurant_app/services/sqlite_service.dart';
@@ -22,7 +24,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final notificationAppLaunchDetails =
+      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
   final prefs = await SharedPreferences.getInstance();
+
+  String route = NavigationRoute.mainRoute.name;
+  String? payload;
+
+  if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+    final notificationResponse =
+        notificationAppLaunchDetails!.notificationResponse;
+    route = NavigationRoute.favoriteRoute.name;
+    payload = notificationResponse?.payload;
+
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
 
   runApp(
     MultiProvider(
@@ -45,9 +63,12 @@ void main() async {
             context.read<ApiService>(),
           ),
         ),
-        ChangeNotifierProvider(create: (context) => ThemeProvider(SharedPreferencesService(prefs))),
+        ChangeNotifierProvider(
+            create: (context) =>
+                ThemeProvider(SharedPreferencesService(prefs))),
         ChangeNotifierProvider(create: (context) => IndexNavProvider()),
-        ChangeNotifierProvider(create: (context) => FavoriteListProvider(SqliteService())),
+        ChangeNotifierProvider(
+            create: (context) => FavoriteListProvider(SqliteService())),
         Provider(
           create: (context) => SqliteService(),
         ),
@@ -57,22 +78,36 @@ void main() async {
           ),
         ),
         Provider(
-         create: (context) => LocalNotificationService()..init(),
-       ),
-        ChangeNotifierProvider(create: (context) => NotificationButtonProvider()),
+          create: (context) => HttpService(),
+        ),
+        Provider(
+          create: (context) => LocalNotificationService(
+            context.read<HttpService>(),
+          )..init()..configureLocalTimeZone(),
+        ),
         ChangeNotifierProvider(
-         create: (context) => LocalNotificationProvider(
-           context.read<LocalNotificationService>(),
-         )..requestPermissions(),
-       ),
+            create: (context) => NotificationButtonProvider()),
+        ChangeNotifierProvider(
+          create: (context) => LocalNotificationProvider(
+            context.read<LocalNotificationService>(),
+          )..requestPermissions(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PayloadProvider(
+            payload: payload,
+          ),
+        ),
       ],
-      child: const MyApp(),
+      child: MyApp(
+        initialRoute: route,
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.initialRoute});
+  final String initialRoute;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +115,7 @@ class MyApp extends StatelessWidget {
       builder: (context, value, child) {
         return MaterialApp(
           title: 'Restaurant App',
-          initialRoute: NavigationRoute.mainRoute.name,
+          initialRoute: initialRoute,
           theme: RestaurantTheme.lightTheme,
           darkTheme: RestaurantTheme.darkTheme,
           themeMode: value.themeMode,

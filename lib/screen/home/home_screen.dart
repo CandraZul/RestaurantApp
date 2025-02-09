@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/data/model/received_notification.dart';
 import 'package:restaurant_app/provider/favorite/favorite_list_povider.dart';
 import 'package:restaurant_app/provider/home/theme_provider.dart';
+import 'package:restaurant_app/provider/notification/payload_provider.dart';
 import 'package:restaurant_app/screen/home/restaurant_card_widget.dart';
 import 'package:restaurant_app/screen/home/restaurant_list_provider.dart';
+import 'package:restaurant_app/services/local_notification_service.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/static/restaurant_list_result_state.dart';
 
@@ -17,6 +20,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController searchController = TextEditingController();
 
+  void _configureSelectNotificationSubject() {
+    selectNotificationStream.stream.listen((String? payload) {
+      context.read<PayloadProvider>().payload = payload;
+      Navigator.pushNamed(context, NavigationRoute.favoriteRoute.name,
+          arguments: payload);
+    });
+  }
+
+  void _configureDidReceiveLocalNotificationSubject() {
+    didReceiveLocalNotificationStream.stream
+        .listen((ReceivedNotification receivedNotification) {
+      final payload = receivedNotification.payload;
+      context.read<PayloadProvider>().payload = payload;
+      Navigator.pushNamed(context, NavigationRoute.favoriteRoute.name,
+          arguments: receivedNotification.payload);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -24,8 +45,17 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.microtask(() {
       context.read<RestaurantListProvider>().fetchRestaurantList();
       context.read<FavoriteListProvider>().loadFavoritesFromDatabase();
-
     });
+
+    _configureSelectNotificationSubject();
+    _configureDidReceiveLocalNotificationSubject();
+  }
+
+  @override
+  void dispose() {
+    selectNotificationStream.close();
+    didReceiveLocalNotificationStream.close();
+    super.dispose();
   }
 
   void _onSearch(String query) {
@@ -44,17 +74,14 @@ class _HomeScreenState extends State<HomeScreen> {
           "Restaurant",
         ),
         actions: [
-            Consumer<ThemeProvider>(
-              builder: (context, value, child){
-                return IconButton(
-                  onPressed: (){
-                    value.toggleTheme();
-                  }, 
-                  icon: Icon(value.isDarkMode
-                      ? Icons.dark_mode
-                      : Icons.light_mode)
-                  );
-              })
+          Consumer<ThemeProvider>(builder: (context, value, child) {
+            return IconButton(
+                onPressed: () {
+                  value.toggleTheme();
+                },
+                icon: Icon(
+                    value.isDarkMode ? Icons.dark_mode : Icons.light_mode));
+          })
         ],
       ),
       body: Column(
