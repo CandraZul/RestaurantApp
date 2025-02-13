@@ -1,6 +1,4 @@
 import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:restaurant_app/data/api/api_service.dart';
 import 'package:restaurant_app/services/local_notification_service.dart';
 import 'package:workmanager/workmanager.dart';
@@ -11,10 +9,7 @@ final _apiService = ApiService();
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    print("halo");
-    print(task);
     if (task == dailyTaskName) {
-      print("bisa");
       await WorkmanagerService.showNotification();
     }
     return Future.value(true);
@@ -40,25 +35,24 @@ class WorkmanagerService {
       dailyTaskName,
       dailyTaskName,
       frequency: const Duration(days: 1),
-      initialDelay: Duration(seconds: 15),
+      initialDelay: initialDelay,
       constraints: Constraints(networkType: NetworkType.connected),
       inputData: {
-        'title': 'Notifikasi Harian',
-        'message': 'Jangan lupa cek kesehatanmu hari ini!',
+        'title': 'Daily Reminder',
+        'message': "Don't forget to take lunch",
         'time': now.toIso8601String()
       },
     );
   }
 
   static Future<void> showNotification() async {
-    print("show notification");
     final response = await _apiService.getRestaurantList();
     if (!response.error) {
       final random = Random();
       final selectedRestaurant =
           response.restaurants[random.nextInt(response.restaurants.length)];
       final int id = DateTime.now().millisecondsSinceEpoch.remainder(100000);;
-      await flutterNotificationService.showNotificationEuy(
+      await flutterNotificationService.showNotification(
           id: id,
           title: "Don't Miss Your Lunch Break!",
           body:

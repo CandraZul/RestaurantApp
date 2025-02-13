@@ -3,10 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:restaurant_app/data/model/received_notification.dart';
-import 'package:restaurant_app/services/http_service.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -40,7 +36,6 @@ class LocalNotificationService {
         if (payload != null && payload.isNotEmpty) {
           selectNotificationStream.add(payload);
         }
-        print("Notifikasi dibuka!");
       },
     );
   }
@@ -50,14 +45,6 @@ class LocalNotificationService {
             .resolvePlatformSpecificImplementation<
                 AndroidFlutterLocalNotificationsPlugin>()
             ?.areNotificationsEnabled() ??
-        false;
-  }
-
-  Future<bool> _requestAndroidNotificationsPermission() async {
-    return await flutterLocalNotificationsPlugin
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
-            ?.requestNotificationsPermission() ??
         false;
   }
 
@@ -95,7 +82,7 @@ class LocalNotificationService {
     }
   }
 
-  Future<void> showNotificationEuy({
+  Future<void> showNotification({
     required int id,
     required String title,
     required String body,
@@ -124,98 +111,6 @@ class LocalNotificationService {
       body,
       notificationDetails,
       payload: payload,
-    );
-  }
-
-  Future<void> configureLocalTimeZone() async {
-    tz.initializeTimeZones();
-    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName));
-  }
-
-  tz.TZDateTime _nextInstanceOfElevenAM() {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate =
-        tz.TZDateTime(tz.local, now.year, now.month, now.day, 22, 42);
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    return scheduledDate;
-  }
-
-  Future<void> scheduleDailyNotification({
-    int id = 0,
-    String channelId = "9",
-    String channelName = "Schedulen",
-  }) async {
-    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      channelId,
-      channelName,
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
-
-    final notificationDetails = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
-    );
-
-    final datetimeSchedule = _nextInstanceOfElevenAM();
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      'Daily scheduled notification title',
-      'This is a body of daily scheduled notification',
-      tz.TZDateTime.from(DateTime(2025, 2, 9, 23, 19), tz.local),
-      notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
-    );
-  }
-
-  Future<List<PendingNotificationRequest>> pendingNotificationRequests() async {
-    final List<PendingNotificationRequest> pendingNotificationRequests =
-        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
-    return pendingNotificationRequests;
-  }
-
-  Future<void> scheduleDailyLunchNotification({
-    required int id,
-    required String title,
-    required String body,
-    required String payload,
-  }) async {
-    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      "3",
-      "Lunch Reminder",
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
-
-    final notificationDetails = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
-    );
-
-    final datetimeSchedule =
-        tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)); // Untuk testing
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      datetimeSchedule,
-      notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
