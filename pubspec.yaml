@@ -46,6 +46,7 @@ dependencies:
     git:
       url: https://github.com/fluttercommunity/flutter_workmanager.git
       ref: b783000
+  mocktail: ^1.0.4
 
 dev_dependencies:
   flutter_test:

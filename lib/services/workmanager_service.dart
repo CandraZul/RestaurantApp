@@ -27,7 +27,7 @@ class WorkmanagerService {
   Future<void> startDailyNotification() async {
     await flutterNotificationService.requestPermissions();
     final now = DateTime.now();
-    final targetTime = DateTime(now.year, now.month, now.day, 10, 0);
+    final targetTime = DateTime(now.year, now.month, now.day, 11, 0);
     final initialDelay = targetTime.isBefore(now)
         ? targetTime.add(const Duration(days: 1)).difference(now)
         : targetTime.difference(now);

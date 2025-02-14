@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/provider/notification/notification_provider.dart';
-import 'package:restaurant_app/services/workmanager_service.dart';
-import 'package:workmanager/workmanager.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});

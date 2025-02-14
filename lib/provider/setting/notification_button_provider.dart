@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:restaurant_app/services/local_notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationButtonProvider with ChangeNotifier {
