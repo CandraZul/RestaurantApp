@@ -18,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController searchController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
@@ -54,10 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           Consumer<ThemeProvider>(builder: (context, value, child) {
             return IconButton(
+                key: const Key('themeButton'),
                 onPressed: () {
                   value.toggleTheme();
                 },
                 icon: Icon(
+                  key: const Key('themeIcon'),
                     value.isDarkMode ? Icons.dark_mode : Icons.light_mode));
           })
         ],
@@ -72,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(30),
             ),
             child: TextField(
+              key: const Key('searchField'),
               controller: searchController,
               onChanged: _onSearch,
               decoration: const InputDecoration(
@@ -86,15 +88,19 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, value, child) {
                 return switch (value.resultState) {
                   RestaurantListLoadingState() => const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        key: Key('loadingIndicator'),
+                      ),
                     ),
                   RestaurantListLoadedState(data: var restaurantList) =>
                     ListView.builder(
+                      key: const Key('restaurantList'),
                       itemCount: restaurantList.length,
                       itemBuilder: (context, index) {
                         final restaurant = restaurantList[index];
 
                         return RestaurantCard(
+                          key: Key('restaurantItem_$index'),
                           restaurant: restaurant,
                           onTap: () {
                             Navigator.pushNamed(
@@ -107,7 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   RestaurantListErrorState(error: var message) => Center(
-                      child: Text(message),
+                      child: Text(
+                        message,
+                        key: const Key('errorMessage'),
+                      ),
                     ),
                   _ => const SizedBox(),
                 };
